@@ -219,15 +219,15 @@ impl BlockDeviceInfo {
                     root_partition = Some(device_rc.clone());
                     debug!(
                         "Not a parent: {}:{}",
-                        root_device.get_name(),
-                        root_partition.get_name()
+                        parent.clone().get_name(),
+                        device_rc.clone().get_name()
                     );
                 } else {
                     root_device = Some(device_rc.clone());
                     root_partition = None;
                     debug!(
                         "Parent: {}",
-                        root_device.get_name()
+                        device_rc.clone().get_name()
                     );
                 }
                 break;
