@@ -204,6 +204,10 @@ impl BlockDeviceInfo {
             }
         }
 
+        debug!("Device map creation done");
+
+        // ANFANG FEHLER
+
         let mut root_device: Option<Rc<dyn BlockDevice>> = None;
         let mut root_partition: Option<Rc<dyn BlockDevice>> = None;
 
@@ -212,14 +216,25 @@ impl BlockDeviceInfo {
             if device.get_device_num() == &root_number {
                 if let Some(parent) = device.get_parent() {
                     root_device = Some(parent.clone());
-                    root_partition = Some(device_rc.clone())
+                    root_partition = Some(device_rc.clone());
+                    debug!(
+                        "Not a parent: {}:{}",
+                        root_device.get_name(),
+                        root_partition.get_name()
+                    );
                 } else {
                     root_device = Some(device_rc.clone());
                     root_partition = None;
+                    debug!(
+                        "Parent: {}",
+                        root_device.get_name()
+                    );
                 }
                 break;
             }
         }
+
+        debug!("Parent device search done");
 
         if let Some(root_device) = root_device {
             if let Some(root_partition) = root_partition {
@@ -230,6 +245,8 @@ impl BlockDeviceInfo {
                 });
             }
         }
+
+        // ENDE FEHLER
 
         Err(Error::with_context(
             ErrorKind::InvState,
