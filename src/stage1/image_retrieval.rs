@@ -47,10 +47,10 @@ const SUPPORTED_DEVICES: [&str; 8] = [
     DEV_TYPE_BBB,
 ];
 
-const IMG_NAME_GEN_X86_64: &str = "resin-image-genericx86-64-ext.resinos-img";
-const IMG_NAME_INTEL_NUC: &str = "resin-image-genericx86-64.resinos-img";
-const IMG_NAME_BBG: &str = "resin-image-beaglebone-green.resinos-img";
-const IMG_NAME_BBB: &str = "resin-image-beaglebone-black.resinos-img";
+const IMG_NAME_GEN_X86_64: &str = "balena-image-genericx86-64-ext.balenaos-img";
+const IMG_NAME_INTEL_NUC: &str = "balena-image-genericx86-64.balenaos-img";
+const IMG_NAME_BBG: &str = "balena-image-beaglebone-green.balenaos-img";
+const IMG_NAME_BBB: &str = "balena-image-beaglebone-black.balenaos-img";
 
 fn parse_versions(versions: &Versions) -> Vec<Version> {
     let mut sem_vers: Vec<Version> = versions
