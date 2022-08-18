@@ -114,9 +114,7 @@ pub(crate) struct BlockDeviceInfo {
 impl BlockDeviceInfo {
     pub fn new() -> Result<BlockDeviceInfo> {
         let stat_res = stat("/").upstream_with_context("Failed to stat root")?;
-        // let root_number = DeviceNum::new(stat_res.st_dev);
-        debug!("USING HARD CODED ROOT DEVICE NUMBER");
-        let root_number = DeviceNum::from_str("259:0")?;
+        let root_number = DeviceNum::new(stat_res.st_dev);
         let mounts = Mount::from_mtab()?;
 
         debug!(
