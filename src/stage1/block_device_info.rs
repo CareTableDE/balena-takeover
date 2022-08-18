@@ -237,7 +237,9 @@ impl BlockDeviceInfo {
         debug!("Parent device search done");
 
         if let Some(root_device) = root_device {
+            debug!("ROOT DEVICE IF");
             if let Some(root_partition) = root_partition {
+                debug!("ROOT PARTITION IF");
                 return Ok(BlockDeviceInfo {
                     root_device,
                     root_partition: Some(root_partition),
