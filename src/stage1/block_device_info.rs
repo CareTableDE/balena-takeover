@@ -27,9 +27,9 @@ use std::str::FromStr;
 
 // TODO: add mountpoints for  partitions
 
-const BLOC_DEV_SUPP_MAJ_NUMBERS: [u64; 46] = [
+const BLOC_DEV_SUPP_MAJ_NUMBERS: [u64; 45] = [
     3, 8, 9, 21, 33, 34, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 64, 65, 66, 67, 68, 69,
-    70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 179, 180, 253, 259,
+    70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 179, 180, 259,
 ];
 
 type DeviceMap = HashMap<PathBuf, Rc<dyn BlockDevice>>;
