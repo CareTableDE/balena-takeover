@@ -14,8 +14,6 @@ use nix::{
     unistd::sync,
 };
 
-use libc::MS_BIND;
-
 use log::{debug, error, info, warn, Level};
 
 pub(crate) mod migrate_info;
@@ -57,6 +55,7 @@ use crate::common::dir_exists;
 use crate::common::stage2_config::LogDevice;
 use crate::common::system::{is_dir, mkdir, stat};
 use mod_logger::{LogDestination, Logger, NO_STREAM};
+use nix::sys::mman::MsFlags;
 
 const S1_XTRA_FS_SIZE: u64 = 10 * 1024 * 1024; // const XTRA_MEM_FREE: u64 = 10 * 1024 * 1024; // 10 MB
 
@@ -454,6 +453,12 @@ fn prepare(opts: &Options, mig_info: &mut MigrateInfo) -> Result<()> {
         "Failed to change current dir to '{}'",
         takeover_dir.display()
     ))?;
+
+    debug!(
+        "BEFORE MOUNT: new_init_path: '{:?}', old_init_path: '{:?}'",
+        &new_init_path.into_os_string().into_string(),
+        &old_init_path.into_os_string().into_string()
+    )
 
     mount(
         Some(&new_init_path),
