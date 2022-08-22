@@ -284,11 +284,13 @@ impl BlockDeviceInfo {
         let mut root_partition_name = "not set";
 
         if root_device.is_some() {
-            root_device_name = root_device.clone().unwrap().get_name();
+            let root_device_clone = root_device.clone();
+            root_device_name = root_device_clone.unwrap().get_name();
         }
 
         if root_partition.is_some() {
-            root_partition_name = root_partition.clone().unwrap().get_name();
+            let root_partition_clone = root_partition.clone();
+            root_partition_name = root_partition_clone.unwrap().get_name();
         }
 
         debug!(
