@@ -191,7 +191,7 @@ impl BlockDeviceInfo {
                     )?;
                     device_map.insert(dev_path, device.clone());
 
-                    debug!("new: got device: {:?}", device);
+                    debug!("new: got device: {:?} on {:?}", device, dev_path.into_os_string().into_string());
                 }
                 Err(why) => {
                     return Err(Error::with_all(
