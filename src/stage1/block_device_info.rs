@@ -280,31 +280,10 @@ impl BlockDeviceInfo {
 
         debug!("Parent device search done");
 
-        let mut root_device_name = "not set";
-        let mut root_partition_name = "not set";
-
-        if root_device.is_some() {
-            let root_device_clone = &root_device.clone();
-            let root_device_clone_unwrap = &root_device_clone.unwrap();
-            root_device_name = &root_device_clone_unwrap.get_name();
-        }
-
-        if root_partition.is_some() {
-            let root_partition_clone = &root_partition.clone();
-            let root_partition_clone_unwrap = &root_partition_clone.unwrap();
-            root_partition_name = &root_partition_clone_unwrap.get_name();
-        }
-
-        debug!(
-            "Root device: {}, root partition: {}",
-            root_device_name,
-            root_partition_name
-        );
-
         if let Some(root_device) = root_device {
-            debug!("ROOT DEVICE IF");
+            debug!("ROOT DEVICE: {}", root_device.copy().get_name());
             if let Some(root_partition) = root_partition {
-                debug!("ROOT PARTITION IF");
+                debug!("ROOT PARTITION: {}", root_partition.copy().get_name());
                 return Ok(BlockDeviceInfo {
                     root_device,
                     root_partition: Some(root_partition),
