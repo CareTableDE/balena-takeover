@@ -281,9 +281,9 @@ impl BlockDeviceInfo {
         debug!("Parent device search done");
 
         if let Some(root_device) = root_device {
-            debug!("ROOT DEVICE: {}", root_device.copy().get_name());
+            debug!("ROOT DEVICE: {}", root_device.clone().get_name());
             if let Some(root_partition) = root_partition {
-                debug!("ROOT PARTITION: {}", root_partition.copy().get_name());
+                debug!("ROOT PARTITION: {}", root_partition.clone().get_name());
                 return Ok(BlockDeviceInfo {
                     root_device,
                     root_partition: Some(root_partition),
