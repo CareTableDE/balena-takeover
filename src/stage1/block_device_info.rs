@@ -189,7 +189,7 @@ impl BlockDeviceInfo {
                         &root_number,
                         &mut device_map,
                     )?;
-                    device_map.insert(dev_path, device.clone());
+                    device_map.insert(dev_path.clone(), device.clone());
 
                     debug!("new: got device: {:?} on {:?}", device, dev_path.into_os_string().into_string());
                 }
