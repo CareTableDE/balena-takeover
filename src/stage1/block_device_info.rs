@@ -279,10 +279,13 @@ impl BlockDeviceInfo {
         }
 
         debug!("Parent device search done");
+
+        let root_device_name = root_device.clone().map_or("not set", |block_dev| block_dev.get_name());
+        let root_partition_name = root_partition.clone().map_or("not set", |block_dev| block_dev.get_name());
         debug!(
             "Root device: {}, root partition: {}",
-            root_device.map_or("not set", |block_dev| block_dev.get_name()),
-            root_partition.map_or("not set", |block_dev| block_dev.get_name())
+            root_device_name,
+            root_partition_name
         );
 
         if let Some(root_device) = root_device {
