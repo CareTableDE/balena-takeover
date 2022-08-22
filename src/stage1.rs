@@ -14,6 +14,8 @@ use nix::{
     unistd::sync,
 };
 
+use libc::MS_BIND;
+
 use log::{debug, error, info, warn, Level};
 
 pub(crate) mod migrate_info;
