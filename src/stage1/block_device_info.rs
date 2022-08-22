@@ -252,7 +252,37 @@ impl BlockDeviceInfo {
             }
         }
 
+        for device_rc in device_map.values_mut() {
+            let device = device_rc.as_ref();
+            debug!(
+                "DEVICE: {}",
+                device_rc.get_name()
+            );
+            if device.get_device_num() == DeviceNum::from_str("253:0") {
+                debug!(
+                    "Is root: {}:{}",
+                    device.get_name(),
+                    device.get_device_num()
+                );
+
+                root_partition = Some(device_rc.clone());
+
+                break;
+            } else {
+                debug!(
+                    "Not a root: {}:{}",
+                    device.get_name(),
+                    device.get_device_num()
+                );
+            }
+        }
+
         debug!("Parent device search done");
+        debug!(
+            "Root device: {}, root partition: {}",
+            root_device.get_name(),
+            root_partition.get_name()
+        );
 
         if let Some(root_device) = root_device {
             debug!("ROOT DEVICE IF");
