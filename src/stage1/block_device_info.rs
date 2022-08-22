@@ -258,7 +258,8 @@ impl BlockDeviceInfo {
                 "DEVICE: {}",
                 device_rc.get_name()
             );
-            if device.get_device_num() == DeviceNum::from_str("253:0") {
+            let dm0 = DeviceNum::from_str("253:0")?;
+            if device.get_device_num() == &dm0 {
                 debug!(
                     "Is root: {}:{}",
                     device.get_name(),
