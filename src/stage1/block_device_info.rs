@@ -285,12 +285,14 @@ impl BlockDeviceInfo {
 
         if root_device.is_some() {
             let root_device_clone = root_device.clone();
-            root_device_name = root_device_clone.unwrap().get_name();
+            let root_device_clone_unwrap = root_device_clone.unwrap();
+            root_device_name = root_device_clone_unwrap.get_name();
         }
 
         if root_partition.is_some() {
             let root_partition_clone = root_partition.clone();
-            root_partition_name = root_partition_clone.unwrap().get_name();
+            let root_partition_clone_unwrap = root_partition_clone.unwrap();
+            root_partition_name = root_partition_clone_unwrap.get_name();
         }
 
         debug!(
