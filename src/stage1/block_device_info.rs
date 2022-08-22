@@ -280,8 +280,8 @@ impl BlockDeviceInfo {
         debug!("Parent device search done");
         debug!(
             "Root device: {}, root partition: {}",
-            root_device.get_name(),
-            root_partition.get_name()
+            root_device.map_or("not set", |block_dev| block_dev.get_name()),
+            root_partition.map_or("not set", |block_dev| block_dev.get_name())
         );
 
         if let Some(root_device) = root_device {
