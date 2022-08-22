@@ -215,7 +215,17 @@ impl BlockDeviceInfo {
 
         for device_rc in device_map.values_mut() {
             let device = device_rc.as_ref();
+            debug!(
+                "DEVICE: {}",
+                device_rc.get_name()
+            );
             if device.get_device_num() == &root_number {
+                debug!(
+                    "Is root: {}:{}",
+                    device.get_name(),
+                    device.get_device_num()
+                );
+
                 if let Some(parent) = device.get_parent() {
                     root_device = Some(parent.clone());
                     root_partition = Some(device_rc.clone());
@@ -229,10 +239,16 @@ impl BlockDeviceInfo {
                     root_partition = None;
                     debug!(
                         "Parent: {}",
-                        device_rc.clone().get_name()
+                        device_rc.get_name()
                     );
                 }
                 break;
+            } else {
+                debug!(
+                    "Not a root: {}:{}",
+                    device.get_name(),
+                    device.get_device_num()
+                );
             }
         }
 
