@@ -455,12 +455,6 @@ fn prepare(opts: &Options, mig_info: &mut MigrateInfo) -> Result<()> {
         takeover_dir.display()
     ))?;
 
-    debug!(
-        "BEFORE MOUNT: new_init_path: '{:?}', old_init_path: '{:?}'",
-        &new_init_path.into_os_string().into_string(),
-        &old_init_path.into_os_string().into_string()
-    );
-
     mount(
         Some(&new_init_path),
         &old_init_path,
