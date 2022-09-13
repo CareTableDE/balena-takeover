@@ -216,7 +216,7 @@ impl BlockDeviceInfo {
         if let (Some(root_device_provided), Some(root_partition_provided)) = (maybe_root_device, maybe_root_partition) {
             debug!(
                 "Using provided root device ({}) and partition ({})",
-                root_device_provided
+                root_device_provided,
                 root_partition_provided
             );
 
