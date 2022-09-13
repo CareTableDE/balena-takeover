@@ -339,6 +339,7 @@ fn prepare(opts: &Options, mig_info: &mut MigrateInfo) -> Result<()> {
     // Assets::write_stage2_script(&takeover_dir, &new_init_path, &tty, opts.get_s2_log_level())?;
 
     let block_dev_info = BlockDeviceInfo::new(
+        opts.root_device(),
         opts.root_partition()
     )?;
 

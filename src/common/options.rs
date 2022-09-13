@@ -43,6 +43,13 @@ pub struct Options {
     #[structopt(
         short,
         long,
+        value_name = "ROOT_DEVICE",
+        help = "Major:Minor number of root device"
+    )]
+    root_device: Option<String>,
+    #[structopt(
+        short,
+        long,
         value_name = "ROOT_PARTITION",
         help = "Major:Minor number of root partition"
     )]
@@ -173,6 +180,10 @@ impl Options {
 
     pub fn image(&self) -> &Option<PathBuf> {
         &self.image
+    }
+
+    pub fn root_device(&self) -> &Option<String> {
+        &self.root_device
     }
 
     pub fn root_partition(&self) -> &Option<String> {

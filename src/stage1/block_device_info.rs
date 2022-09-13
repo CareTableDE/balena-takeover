@@ -113,6 +113,7 @@ pub(crate) struct BlockDeviceInfo {
 
 impl BlockDeviceInfo {
     pub fn new(
+        maybe_root_device: &Option<String>,
         maybe_root_partition: &Option<String>
     ) -> Result<BlockDeviceInfo> {
         let stat_res = stat("/").upstream_with_context("Failed to stat root")?;
@@ -211,61 +212,74 @@ impl BlockDeviceInfo {
         let mut root_device: Option<Rc<dyn BlockDevice>> = None;
         let mut root_partition: Option<Rc<dyn BlockDevice>> = None;
 
-        for device_rc in device_map.values_mut() {
-            let device = device_rc.as_ref();
+        // if root device and partition are specified, use them
+        if let (Some(root_device_provided), Some(root_partition_provided)) = (maybe_root_device, maybe_root_partition) {
             debug!(
+                "Using provided root device ({}) and partition ({})",
+                root_device_provided
+                root_partition_provided
+            );
+
+            let root_device_num_provided = DeviceNum::from_str(root_device_provided)?;
+            let root_partition_device_num_provided = DeviceNum::from_str(root_partition_provided)?;
+
+            // we go through all devices we found
+            for device_rc in device_map.values_mut() {
+                let device = device_rc.as_ref();
+
+                if device.get_device_num() == &root_device_num_provided {
+                    root_device = Some(device_rc.clone());
+                }
+                if device.get_device_num() == &root_partition_device_num_provided {
+                    root_partition = Some(device_rc.clone());
+                }
+
+                if root_device.is_some() && root_partition.is_some() {
+                    break;
+                }
+            }
+        } else {
+            // if root device and partition are not specified, try to find them
+            debug!("No Root Partition has been provided, searching for it...");
+
+            for device_rc in device_map.values_mut() {
+                let device = device_rc.as_ref();
+                debug!(
                 "DEVICE: {}",
                 device_rc.get_name()
             );
-            if device.get_device_num() == &root_number {
-                debug!(
+                if device.get_device_num() == &root_number {
+                    debug!(
                     "Is root: {}:{}",
                     device.get_name(),
                     device.get_device_num()
                 );
 
-                if let Some(parent) = device.get_parent() {
-                    root_device = Some(parent.clone());
-                    root_partition = Some(device_rc.clone());
-                    debug!(
+                    if let Some(parent) = device.get_parent() {
+                        root_device = Some(parent.clone());
+                        root_partition = Some(device_rc.clone());
+                        debug!(
                         "Not a parent: {}:{}",
                         parent.clone().get_name(),
                         device_rc.clone().get_name()
                     );
-                } else {
-                    root_device = Some(device_rc.clone());
-                    root_partition = None;
-                    debug!(
+                    } else {
+                        root_device = Some(device_rc.clone());
+                        root_partition = None;
+                        debug!(
                         "Parent: {}",
                         device_rc.get_name()
                     );
-                }
-                break;
-            } else {
-                debug!(
+                    }
+                    break;
+                } else {
+                    debug!(
                     "Not a root: {}:{}",
                     device.get_name(),
                     device.get_device_num()
                 );
-            }
-        }
-
-        if let Some(root_partition_provided) = maybe_root_partition {
-            debug!(
-                "Using provided Root Partition ({})",
-                root_partition_provided
-            );
-
-            for device_rc in device_map.values_mut() {
-                let device = device_rc.as_ref();
-                let root_partition_device_num_provided = DeviceNum::from_str(root_partition_provided)?;
-                if device.get_device_num() == &root_partition_device_num_provided {
-                    root_partition = Some(device_rc.clone());
-                    break;
                 }
             }
-        } else {
-            trace!("No Root Partition has been provided, using the one found");
         }
 
         debug!("Parent device search done");
