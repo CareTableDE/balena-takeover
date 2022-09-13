@@ -44,7 +44,6 @@ pub struct Options {
         short,
         long,
         value_name = "ROOT_DEVICE",
-        parse(from_os_str),
         help = "Major:Minor number of root device"
     )]
     root_device: Option<String>,
@@ -52,7 +51,6 @@ pub struct Options {
         short,
         long,
         value_name = "ROOT_PARTITION",
-        parse(from_os_str),
         help = "Major:Minor number of root partition"
     )]
     root_partition: Option<String>,
