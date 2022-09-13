@@ -43,13 +43,6 @@ pub struct Options {
     #[structopt(
         short,
         long,
-        value_name = "ROOT_DEVICE",
-        help = "Major:Minor number of root device"
-    )]
-    root_device: Option<String>,
-    #[structopt(
-        short,
-        long,
         value_name = "ROOT_PARTITION",
         help = "Major:Minor number of root partition"
     )]

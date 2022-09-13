@@ -27,9 +27,9 @@ use std::str::FromStr;
 
 // TODO: add mountpoints for  partitions
 
-const BLOC_DEV_SUPP_MAJ_NUMBERS: [u64; 46] = [
+const BLOC_DEV_SUPP_MAJ_NUMBERS: [u64; 45] = [
     3, 8, 9, 21, 33, 34, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 64, 65, 66, 67, 68, 69,
-    70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 179, 180, 253, 259,
+    70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 179, 180, 259,
 ];
 
 type DeviceMap = HashMap<PathBuf, Rc<dyn BlockDevice>>;
@@ -113,20 +113,8 @@ pub(crate) struct BlockDeviceInfo {
 
 impl BlockDeviceInfo {
     pub fn new(
-        maybe_root_device: &Option<String>,
         maybe_root_partition: &Option<String>
     ) -> Result<BlockDeviceInfo> {
-
-        if let (Some(root_device), Some(root_partition)) = (maybe_root_device, maybe_root_partition) {
-            debug!(
-                "Provided Root Device ({}), Root Partition ({})",
-                root_device,
-                root_partition
-            );
-        } else {
-            debug!("No Root Device/Partition has been provided - Starting search...");
-        }
-
         let stat_res = stat("/").upstream_with_context("Failed to stat root")?;
         let root_number = DeviceNum::new(stat_res.st_dev);
         let mounts = Mount::from_mtab()?;
@@ -262,36 +250,25 @@ impl BlockDeviceInfo {
             }
         }
 
-        // for device_rc in device_map.values_mut() {
-        //     let device = device_rc.as_ref();
-        //     debug!(
-        //         "DEVICE: {}",
-        //         device_rc.get_name()
-        //     );
-        //     let dm0 = DeviceNum::from_str("253:0")?;
-        //     if device.get_device_num() == &dm0 {
-        //         debug!(
-        //             "Is root: {}:{}",
-        //             device.get_name(),
-        //             device.get_device_num()
-        //         );
-        //
-        //         root_partition = Some(device_rc.clone());
-        //
-        //         break;
-        //     } else {
-        //         debug!(
-        //             "Not a root: {}:{}",
-        //             device.get_name(),
-        //             device.get_device_num()
-        //         );
-        //     }
-        // }
-        //
-        // debug!("Parent device search done");
+        if let Some(root_partition_provided) = maybe_root_partition {
+            debug!(
+                "Using provided Root Partition ({})",
+                root_partition_provided
+            );
 
-        // root_device_number = maybe_root_device.map(DeviceNum::from_str);
-        // root_partition_number = maybe_root_partition.map(DeviceNum::from_str);
+            for device_rc in device_map.values_mut() {
+                let device = device_rc.as_ref();
+                let root_partition_device_num_provided = DeviceNum::from_str(root_partition_provided)?;
+                if device.get_device_num() == &root_partition_device_num_provided {
+                    root_partition = Some(device_rc.clone());
+                    break;
+                }
+            }
+        } else {
+            trace!("No Root Partition has been provided, using the one found");
+        }
+
+        debug!("Parent device search done");
 
         if let Some(root_device) = root_device {
             debug!("ROOT DEVICE: {}", root_device.clone().get_name());
