@@ -41,6 +41,22 @@ pub struct Options {
     )]
     config: Option<PathBuf>,
     #[structopt(
+        short,
+        long,
+        value_name = "ROOT_DEVICE",
+        parse(from_os_str),
+        help = "Major:Minor number of root device"
+    )]
+    root_device: Option<String>,
+    #[structopt(
+        short,
+        long,
+        value_name = "ROOT_PARTITION",
+        parse(from_os_str),
+        help = "Major:Minor number of root partition"
+    )]
+    root_partition: Option<String>,
+    #[structopt(
         long,
         default_value = "info",
         help = "Set log level, one of [error,warn,info,debug,trace]"
@@ -166,6 +182,14 @@ impl Options {
 
     pub fn image(&self) -> &Option<PathBuf> {
         &self.image
+    }
+
+    pub fn root_device(&self) -> &Option<String> {
+        &self.root_device
+    }
+
+    pub fn root_partition(&self) -> &Option<String> {
+        &self.root_partition
     }
 
     pub fn version(&self) -> &str {

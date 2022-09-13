@@ -112,11 +112,24 @@ pub(crate) struct BlockDeviceInfo {
 }
 
 impl BlockDeviceInfo {
-    pub fn new() -> Result<BlockDeviceInfo> {
+    pub fn new(
+        maybe_root_device: &Option<String>,
+        maybe_root_partition: &Option<String>
+    ) -> Result<BlockDeviceInfo> {
+
+        if let (Some(root_device), Some(root_partition)) = (maybe_root_device, maybe_root_partition) {
+            debug!(
+                "Provided Root Device ({}), Root Partition ({})",
+                root_device,
+                root_partition
+            );
+        } else {
+            debug!("No Root Device/Partition has been provided - Starting search...");
+        }
+
         let stat_res = stat("/").upstream_with_context("Failed to stat root")?;
         // let root_number = DeviceNum::new(stat_res.st_dev);
         debug!("USING HARD CODED ROOT DEVICE NUMBER");
-        let root_number = DeviceNum::from_str("259:0")?;
         let mounts = Mount::from_mtab()?;
 
         debug!(
@@ -208,8 +221,6 @@ impl BlockDeviceInfo {
 
         debug!("Device map creation done");
 
-        // ANFANG FEHLER
-
         let mut root_device: Option<Rc<dyn BlockDevice>> = None;
         let mut root_partition: Option<Rc<dyn BlockDevice>> = None;
 
@@ -280,6 +291,9 @@ impl BlockDeviceInfo {
 
         debug!("Parent device search done");
 
+        root_device_number = maybe_root_device.map(DeviceNum::from_str);
+        root_partition_number = maybe_root_partition.map(DeviceNum::from_str);
+
         if let Some(root_device) = root_device {
             debug!("ROOT DEVICE: {}", root_device.clone().get_name());
             if let Some(root_partition) = root_partition {
@@ -291,8 +305,6 @@ impl BlockDeviceInfo {
                 });
             }
         }
-
-        // ENDE FEHLER
 
         Err(Error::with_context(
             ErrorKind::InvState,

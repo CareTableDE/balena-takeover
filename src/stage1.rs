@@ -338,7 +338,10 @@ fn prepare(opts: &Options, mig_info: &mut MigrateInfo) -> Result<()> {
     let new_init_path = path_append(&takeover_dir, &format!("/bin/{}", env!("CARGO_PKG_NAME")));
     // Assets::write_stage2_script(&takeover_dir, &new_init_path, &tty, opts.get_s2_log_level())?;
 
-    let block_dev_info = BlockDeviceInfo::new()?;
+    let block_dev_info = BlockDeviceInfo::new(
+        opts.root_device(),
+        opts.root_partition()
+    )?;
 
     let flash_dev = if let Some(flash_dev) = opts.flash_to() {
         if let Some(flash_dev) = block_dev_info.get_devices().get(flash_dev) {
