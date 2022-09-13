@@ -290,8 +290,8 @@ impl BlockDeviceInfo {
 
         debug!("Parent device search done");
 
-        root_device_number = maybe_root_device.map(DeviceNum::from_str);
-        root_partition_number = maybe_root_partition.map(DeviceNum::from_str);
+        // root_device_number = maybe_root_device.map(DeviceNum::from_str);
+        // root_partition_number = maybe_root_partition.map(DeviceNum::from_str);
 
         if let Some(root_device) = root_device {
             debug!("ROOT DEVICE: {}", root_device.clone().get_name());
