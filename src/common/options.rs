@@ -175,10 +175,6 @@ impl Options {
         &self.image
     }
 
-    pub fn root_device(&self) -> &Option<String> {
-        &self.root_device
-    }
-
     pub fn root_partition(&self) -> &Option<String> {
         &self.root_partition
     }
