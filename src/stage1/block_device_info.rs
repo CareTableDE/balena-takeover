@@ -262,33 +262,33 @@ impl BlockDeviceInfo {
             }
         }
 
-        for device_rc in device_map.values_mut() {
-            let device = device_rc.as_ref();
-            debug!(
-                "DEVICE: {}",
-                device_rc.get_name()
-            );
-            let dm0 = DeviceNum::from_str("253:0")?;
-            if device.get_device_num() == &dm0 {
-                debug!(
-                    "Is root: {}:{}",
-                    device.get_name(),
-                    device.get_device_num()
-                );
-
-                root_partition = Some(device_rc.clone());
-
-                break;
-            } else {
-                debug!(
-                    "Not a root: {}:{}",
-                    device.get_name(),
-                    device.get_device_num()
-                );
-            }
-        }
-
-        debug!("Parent device search done");
+        // for device_rc in device_map.values_mut() {
+        //     let device = device_rc.as_ref();
+        //     debug!(
+        //         "DEVICE: {}",
+        //         device_rc.get_name()
+        //     );
+        //     let dm0 = DeviceNum::from_str("253:0")?;
+        //     if device.get_device_num() == &dm0 {
+        //         debug!(
+        //             "Is root: {}:{}",
+        //             device.get_name(),
+        //             device.get_device_num()
+        //         );
+        //
+        //         root_partition = Some(device_rc.clone());
+        //
+        //         break;
+        //     } else {
+        //         debug!(
+        //             "Not a root: {}:{}",
+        //             device.get_name(),
+        //             device.get_device_num()
+        //         );
+        //     }
+        // }
+        //
+        // debug!("Parent device search done");
 
         // root_device_number = maybe_root_device.map(DeviceNum::from_str);
         // root_partition_number = maybe_root_partition.map(DeviceNum::from_str);
