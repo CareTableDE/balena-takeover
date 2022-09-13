@@ -228,9 +228,11 @@ impl BlockDeviceInfo {
                 let device = device_rc.as_ref();
 
                 if device.get_device_num() == &root_device_num_provided {
+                    debug!("Root device found: {:?}", device);
                     root_device = Some(device_rc.clone());
                 }
                 if device.get_device_num() == &root_partition_device_num_provided {
+                    debug!("Root partition found: {:?}", device);
                     root_partition = Some(device_rc.clone());
                 }
 
