@@ -41,19 +41,21 @@ FLAGS:
         --tar-internal      Use internal tar instead of external command
 
 OPTIONS:
-        --backup-cfg <BACKUP-CONFIG>     Backup configuration file
-        --check-timeout <TIMEOUT>        API/VPN check timeout in seconds.
-    -c, --config <CONFIG_JSON>           Path to balena config.json
-    -f, --flash-to <INSTALL_DEVICE>      Use INSTALL_DEVICE to flash balena to
-    -i, --image <IMAGE>                  Path to balena-os image
-        --log-file <LOG_FILE>            Set stage1 log file name
-        --log-level <log-level>          Set log level, one of [error,warn,info,debug,trace] [default: info]
-    -l, --log-to <LOG_DEVICE>            Write stage2 log to LOG_DEVICE
-        --nwmgr-cfg <NWMGR_FILE>...      Supply a network manager file to inject into balena-os
-        --s2-log-level <s2-log-level>    Set stage2 log level, one of [error,warn,info,debug,trace]
-    -v, --version <VERSION>              Version of balena-os image to download
-        --wifi <SSID>...                 Create a network manager configuation for configured wifi with SSID
-    -w, --work-dir <DIRECTORY>           Path to working directory%                                                                              
+        --backup-cfg <BACKUP-CONFIG>      Backup configuration file
+        --check-timeout <TIMEOUT>         API/VPN check timeout in seconds.
+    -c, --config <CONFIG_JSON>            Path to balena config.json
+    -f, --flash-to <INSTALL_DEVICE>       Use INSTALL_DEVICE to flash balena to
+    -i, --image <IMAGE>                   Path to balena-os image
+        --log-file <LOG_FILE>             Set stage1 log file name
+        --log-level <log-level>           Set log level, one of [error,warn,info,debug,trace] [default: info]
+    -l, --log-to <LOG_DEVICE>             Write stage2 log to LOG_DEVICE
+        --nwmgr-cfg <NWMGR_FILE>...       Supply a network manager file to inject into balena-os
+        --root-device <ROOT_DEVICE>       Set root device manually (e.g. 8:0)
+        --root-partition <ROOT_PARTITION> Set root partition manually (e.g. 253:0)
+        --s2-log-level <s2-log-level>     Set stage2 log level, one of [error,warn,info,debug,trace]
+    -v, --version <VERSION>               Version of balena-os image to download
+        --wifi <SSID>...                  Create a network manager configuation for configured wifi with SSID
+    -w, --work-dir <DIRECTORY>            Path to working directory%                                                                              
 ```   
 
 
@@ -210,6 +212,32 @@ If no filter is given, all files will be copied.
   - source: "/home/thomas/develop/balena.io/migrate/migratecfg/init-scripts"
     filter: 'balena-.*'
 ```
+
+### Setting root device and partition manually
+
+*takeover* will try to determine the root device and partition automatically. Sometimes, this doesn't work as expected.
+In this case you can specify the root device and partition manually using the ```--root-device``` and ```--root-partition``` options.
+You must always use both options together, otherwise they will be skipped and automatic detection will be used.
+
+Use ```lsblk``` to find the root device and partition number.
+
+```
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+...                       
+sda                         8:0    0 119,2G  0 disk 
+├─sda1                      8:1    0   512M  0 part /boot/efi
+├─sda2                      8:2    0     1G  0 part /boot
+└─sda3                      8:3    0 117,8G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0  58,9G  0 lvm  /
+```
+
+Here, the root device is ```sda``` and the root partition is ```ubuntu--vg-ubuntu--lv```. We would
+therefore use the following options:
+
+```takeover (...) --root-device "8:0" --root-partition "253:0"```
+
+If the root device still can't be found, check if your device major number is in ```BLOC_DEV_SUPP_MAJ_NUMBERS``` in ```block_device_info.rs```.
+If not, consider adding it, as otherwise it will be skipped during detection.
 
     
 ## Compiling takeover
